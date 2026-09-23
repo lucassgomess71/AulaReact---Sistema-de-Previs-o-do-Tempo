@@ -1,3 +1,6 @@
+//Importando o arquivo css para usar o CSS
+import "./App.css";
+
 //Importando hook da biblioteca react 
 // Ele permite armazenar valores e atualizar a tela automaticamente 
 import { useState } from "react";
@@ -16,8 +19,52 @@ function App() {
   //const reponsavel por armazenar a umidade da cidade
   const [umidade, setUmidade] = useState("");
 
+  // função executada quando o usario clicar no botão consultarClima
+  async function consultarClima() {
+
+    // Verifica se o campo está vazio
+    if (cidade === "") {
+      alert("Digite uma cidade!");
+      return;
+    }
+
+    if (cidade.trim().toLowerCase() === "hogwarts") {
+      setTemperatura("18°C");
+      setClima("Encantado e nublado");
+      setUmidade("72%");
+      return;
+    }
+
+    try {
+      // Faz a requisição para a API 
+      const resposta = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=21da1b0054bc57d60afff851fa0b3734&units=metric&lang=pt_br`
+
+      );
+
+      // Converte a resposta para JSON
+      const dados = await resposta.json();
+        
+      // verifica se a cidade foi encontrada
+      if (dados.cod !== 200) {
+        alert("Cidade não encontrada!");
+        return;
+      }
+      
+      // Atualiza a temperatura
+      setTemperatura(dados.main.temp + "°C");
+
+      // atualiza a condição climatica
+      setClima(dados.weather[0].description); 
+      
+     // atualiza a umidade
+      setUmidade(dados.main.humidity + "%");
+  } catch (error) {
+    alert("Erro ao consultar o clima!");
+  }
+}
   // função responsavel para executar quando o usuario clicar no botão consultarClima
-  function consultarClima() {
+  /* function consultarClima() {
     // verifica se a cidade e são paulo
     if (
       cidade.toLowerCase() === "são paulo" ||
@@ -90,70 +137,76 @@ function App() {
 
     }
 
-  }
+  } */
 
   // Retorna a interface visual do sistema
   return (
+    <div className="weather-app">
+      <div className="weather-card">
+        <header className="topbar">
+          <div className="brand">
+            <span className="brand-mark">☀️</span>
+            <span>TempoNow</span>
+          </div>
+          <span className="status-pill">Ao vivo</span>
+        </header>
 
-    <div
-      style={{
-        padding: "20px",
-        fontFamily: "Arial"
-      }}
-    >
+        <div className="welcome-block">
+          <p className="eyebrow">Previsão em tempo real</p>
+          <h1>Sistema de Previsão do Tempo</h1>
+        </div>
 
-      {/* Título Principal */}
-      <h1>Sistema de Previsão do Tempo</h1>
+        <div className="search-panel">
+          <input
+            className="city-input"
+            type="text"
+            placeholder="Digite sua cidade"
+            value={cidade}
+            onChange={(e) => setCidade(e.target.value)}
+          />
 
-      {/* Campo para digitação */}
-      <input
-        // Tipo de Campo
-        type="text"
+          <button className="search-button" onClick={consultarClima}>
+            Consultar
+          </button>
+        </div>
 
-        // Texto exibido dentro da caixa
-        placeholder="Digite sua Cidade"
+        <div className="weather-result">
+          <div className="result-header">
+            <span className="result-icon">📍</span>
+            <div>
+              <p className="label">Cidade</p>
+              <h2>{cidade || "Sua cidade"}</h2>
+            </div>
+          </div>
 
-        //valor vinculado ao estado cidade
-        value={cidade}
+          <div className="metrics-grid">
+            <div className="metric-card">
+              <span className="metric-icon">🌡️</span>
+              <div>
+                <p className="label">Temperatura</p>
+                <strong>{temperatura || "--°C"}</strong>
+              </div>
+            </div>
 
-        // atualiza o estado quando o usuario digita
-        onChange={(e) => setCidade(e.target.value)}
-      />
+            <div className="metric-card">
+              <span className="metric-icon">☁️</span>
+              <div>
+                <p className="label">Clima</p>
+                <strong>{clima || "Aguardando consulta"}</strong>
+              </div>
+            </div>
 
-      {/* Botão de Consulta */}
-
-      <button
-
-      onClick={consultarClima}
-
-      style={{
-        marginLeft:"10px"
-      }}
->
-
-        {/* Texto exibido no Botão */}
-        Consultar
-      </button>
-      {/* Linha Horizontal para separa sessões */}
-      <hr />
-
-      {/* Exibe a cidade informada */}
-      <h2>Cidade: {cidade}</h2>
-
-      {/* Exibe a temperatura */}
-      <h2>Temperatura: {temperatura}</h2>
-
-      {/* Exibe condição climatica  */}
-      <h2>Clima: {clima}</h2>
-
-
-      {/* Exibe a umidade */}
-      <h2>Umidade: {umidade}</h2>
-
- 
-    
+            <div className="metric-card full-width">
+              <span className="metric-icon">💧</span>
+              <div>
+                <p className="label">Umidade</p>
+                <strong>{umidade || "--%"}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
   );
 }
 
