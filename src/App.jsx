@@ -3,7 +3,7 @@ import "./App.css";
 
 //Importando hook da biblioteca react 
 // Ele permite armazenar valores e atualizar a tela automaticamente 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 //cria o componente principal da aplicação
 function App() {
@@ -59,6 +59,52 @@ function App() {
       
      // atualiza a umidade
       setUmidade(dados.main.humidity + "%");
+
+      
+// CONTEÚDO DA AULA DE HOJE
+// Enviando dados do React para uma API própria
+// utilizando o método POST.
+// ===============================
+
+// Faz uma requisição para a API de histórico criada pelos alunos
+await fetch("http://localhost:3000/historico", {
+
+  // Define o método HTTP utilizado
+  method: "POST",
+
+  // Informa que os dados enviados estarão no formato JSON
+  headers: {
+    "Content-Type": "application/json"
+  },
+
+  // Converte o objeto JavaScript para JSON
+  body: JSON.stringify({
+
+    // Envia o nome da cidade consultada
+    cidade: cidade,
+
+    // Envia a temperatura retornada pela API OpenWeatherMap
+    temperatura: dados.main.temp + "°C",
+
+    //Envia a descrição do clima
+    // o índice [0] acessa o primeiro elemento do array "weather"
+    // Um array é uma lista de valores armazenados em sequencia
+    // e acessando por posição3
+
+
+    // Envia a descrição do clima
+    clima: dados.weather[0].description,
+
+    // Envia a umidade do ar
+    umidade: dados.main.humidity + "%"
+
+  })
+
+});
+
+// Fim do conteúdo da aula
+// Neste momento os dados foram enviados para a API
+// e armazenados no histórico de consultas.
   } catch (error) {
     alert("Erro ao consultar o clima!");
   }
