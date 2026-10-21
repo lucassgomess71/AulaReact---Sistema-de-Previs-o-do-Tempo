@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "cidade": "São paulo",
+    "temperatura": "15.87°C",
+    "clima": "nublado",
+    "umidade": "84%"
+  },
+  {
+    "cidade": "nova york",
+    "temperatura": "16.44°C",
+    "clima": "céu limpo",
+    "umidade": "40%"
+  },
+  {
+    "cidade": "brasilia",
+    "temperatura": "26.51°C",
+    "clima": "nublado",
+    "umidade": "39%"
+  },
+  {
+    "cidade": "itaquera",
+    "temperatura": "15.98°C",
+    "clima": "nublado",
+    "umidade": "79%"
+  },
+  {
+    "cidade": "são paulo",
+    "temperatura": "15.84°C",
+    "clima": "nublado",
+    "umidade": "84%"
+  },
+  {
+    "cidade": "pernambuco",
+    "temperatura": "23.06°C",
+    "clima": "algumas nuvens",
+    "umidade": "58%"
+  },
+  {
+    "cidade": "joao pessoa",
+    "temperatura": "24.13°C",
+    "clima": "algumas nuvens",
+    "umidade": "88%"
+  },
+  {
+    "cidade": "ceara",
+    "temperatura": "24.55°C",
+    "clima": "céu limpo",
+    "umidade": "64%"
+  },
+  {
+    "cidade": "fortaleza",
+    "temperatura": "27.07°C",
+    "clima": "nublado",
+    "umidade": "78%"
+  },
+  {
+    "cidade": "Londrina",
+    "temperatura": "21.81°C",
+    "clima": "céu limpo",
+    "umidade": "56%"
+  },
+  {
+    "cidade": "Londres",
+    "temperatura": "8.35°C",
+    "clima": "nuvens dispersas",
+    "umidade": "92%"
+  }
+]

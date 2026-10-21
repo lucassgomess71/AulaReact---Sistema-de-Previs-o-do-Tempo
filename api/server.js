@@ -7,7 +7,7 @@ import cors from "cors";
 import fs from "fs";
 
 // importa a conexao criada com o Firebsa
-import db from "./firebase,js";
+import db from "./firebase.js";
 
 import {
     ref,

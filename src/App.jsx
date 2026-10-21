@@ -1,29 +1,14 @@
-//Importando o arquivo css para usar o CSS
 import "./App.css";
+import { useState } from "react";
 
-//Importando hook da biblioteca react 
-// Ele permite armazenar valores e atualizar a tela automaticamente 
-import { useMemo, useState } from "react";
-
-//cria o componente principal da aplicação
 function App() {
-  //const responsavel por armazenar a cidade digitada
   const [cidade, setCidade] = useState("");
-
-  // const reponsavel por armazenar a temperaratura da cidade
   const [temperatura, setTemperatura] = useState("");
-
-  // const reponsavel por armazenar o clima da cidade
   const [clima, setClima] = useState("");
-
-  //const reponsavel por armazenar a umidade da cidade
   const [umidade, setUmidade] = useState("");
 
-  // função executada quando o usario clicar no botão consultarClima
   async function consultarClima() {
-
-    // Verifica se o campo está vazio
-    if (cidade === "") {
+    if (cidade.trim() === "") {
       alert("Digite uma cidade!");
       return;
     }
@@ -36,225 +21,64 @@ function App() {
     }
 
     try {
-      // Faz a requisição para a API 
       const resposta = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=21da1b0054bc57d60afff851fa0b3734&units=metric&lang=pt_br`
-
       );
-
-      // Converte a resposta para JSON
       const dados = await resposta.json();
-        
-      // verifica se a cidade foi encontrada
+
       if (dados.cod !== 200) {
         alert("Cidade não encontrada!");
         return;
       }
-      
-      // Atualiza a temperatura
-      setTemperatura(dados.main.temp + "°C");
 
-      // atualiza a condição climatica
-      setClima(dados.weather[0].description); 
-      
-     // atualiza a umidade
-      setUmidade(dados.main.humidity + "%");
+      const novaTemperatura = `${dados.main.temp}°C`;
+      const novoClima = dados.weather[0].description;
+      const novaUmidade = `${dados.main.humidity}%`;
 
-      
-// CONTEÚDO DA AULA DE HOJE
-// Enviando dados do React para uma API própria
-// utilizando o método POST.
-// ===============================
+      setTemperatura(novaTemperatura);
+      setClima(novoClima);
+      setUmidade(novaUmidade);
 
-// Faz uma requisição para a API de histórico criada pelos alunos
-await fetch("http://localhost:3000/historico", {
-
-  // Define o método HTTP utilizado
-  method: "POST",
-
-  // Informa que os dados enviados estarão no formato JSON
-  headers: {
-    "Content-Type": "application/json"
-  },
-
-  // Converte o objeto JavaScript para JSON
-  body: JSON.stringify({
-
-    // Envia o nome da cidade consultada
-    cidade: cidade,
-
-    // Envia a temperatura retornada pela API OpenWeatherMap
-    temperatura: dados.main.temp + "°C",
-
-    //Envia a descrição do clima
-    // o índice [0] acessa o primeiro elemento do array "weather"
-    // Um array é uma lista de valores armazenados em sequencia
-    // e acessando por posição3
-
-
-    // Envia a descrição do clima
-    clima: dados.weather[0].description,
-
-    // Envia a umidade do ar
-    umidade: dados.main.humidity + "%"
-
-  })
-
-});
-
-// Fim do conteúdo da aula
-// Neste momento os dados foram enviados para a API
-// e armazenados no histórico de consultas.
-  } catch (error) {
-    alert("Erro ao consultar o clima!");
+      await fetch("http://localhost:3000/historico", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cidade, temperatura: novaTemperatura, clima: novoClima, umidade: novaUmidade }),
+      });
+    } catch (error) {
+      alert("Erro ao consultar o clima!");
+    }
   }
-}
-  // função responsavel para executar quando o usuario clicar no botão consultarClima
-  /* function consultarClima() {
-    // verifica se a cidade e são paulo
-    if (
-      cidade.toLowerCase() === "são paulo" ||
-      cidade.toLowerCase() === "sao paulo"
-    ) {
-      // Atualiza a temperatura
-      setTemperatura("24°");
-      // atualiza a condição climatica
-      setClima("Ensolarado");
-      // atualiza a umidade
-      setUmidade("60%");
-    }
 
-    else if (cidade.toLowerCase() === "Curitiba") {
-
-      setTemperatura("17°");
-
-      setClima("Chuvoso");
-
-      setUmidade("85%")
-
-    }
-
-    else if (cidade.toLowerCase() === "Brasília") {
-
-      setTemperatura("21°");
-
-      setClima("Nublado");
-
-      setUmidade("45%")
-
-    }
-
-    else if (cidade.toLowerCase() === "Rondonia") {
-
-      setTemperatura("24°");
-
-      setClima("Chuvoso");
-
-      setUmidade("35%")
-
-    }
-    else if (cidade.toLowerCase() === "Pernambuco") {
-
-      setTemperatura("30°");
-
-      setClima("Muito Calor");
-
-      setUmidade("60%")
-
-    }
-    else if (cidade.toLowerCase() === "Rio de janeiro") {
-
-      setTemperatura("32°");
-
-      setClima("Ensolarado");
-
-      setUmidade("70%")
-
-    }
-
-    // executa caso a cidade não esteja cadastrada
-    else {
-
-      setTemperatura("--");
-
-      setClima("Cidade não Cadastrada");
-
-      setUmidade("--");
-
-    }
-
-  } */
-
-  // Retorna a interface visual do sistema
   return (
     <div className="weather-app">
-      <div className="weather-card">
+      <div className="ambient-shape ambient-shape-one" />
+      <div className="ambient-shape ambient-shape-two" />
+      <main className="weather-shell">
         <header className="topbar">
-          <div className="brand">
-            <span className="brand-mark">☀️</span>
-            <span>TempoNow</span>
-          </div>
-          <span className="status-pill">Ao vivo</span>
+          <div className="brand"><span className="brand-mark">◒</span><span>clima / agora</span></div>
+          <span className="status-pill"><span className="status-dot" /> dados ao vivo</span>
         </header>
 
-        <div className="welcome-block">
-          <p className="eyebrow">Previsão em tempo real</p>
-          <h1>Sistema de Previsão do Tempo</h1>
-        </div>
+        <section className="intro-block">
+          <div><p className="eyebrow">Seu pulso atmosférico</p><h1>Leia o céu<br /><em>da sua cidade.</em></h1></div>
+          <p className="intro-copy">Uma visão simples e precisa do tempo onde você está, atualizada em poucos segundos.</p>
+        </section>
 
-        <div className="search-panel">
-          <input
-            className="city-input"
-            type="text"
-            placeholder="Digite sua cidade"
-            value={cidade}
-            onChange={(e) => setCidade(e.target.value)}
-          />
+        <section className="search-panel" aria-label="Consultar clima">
+          <div className="input-wrap"><span className="input-icon">⌕</span><input className="city-input" type="text" placeholder="Busque uma cidade" value={cidade} onChange={(e) => setCidade(e.target.value)} onKeyDown={(e) => e.key === "Enter" && consultarClima()} /></div>
+          <button className="search-button" onClick={consultarClima}>Ver previsão <span>↗</span></button>
+        </section>
 
-          <button className="search-button" onClick={consultarClima}>
-            Consultar
-          </button>
-        </div>
+        <section className="weather-result" aria-live="polite">
+          <div className="result-topline"><div className="location-lockup"><span className="location-icon">⌖</span><div><p className="label">Agora em</p><h2>{cidade || "Sua cidade"}</h2></div></div><span className="date-note">condição atual</span></div>
+          <div className="main-reading"><div className="temperature-block"><span className="weather-symbol">☼</span><strong>{temperatura || "--°C"}</strong></div><div className="condition-block"><p className="label">Sensação do dia</p><strong>{clima || "Aguardando consulta"}</strong><p className="reading-caption">Informações meteorológicas em tempo real</p></div></div>
+          <div className="metrics-grid"><div className="metric-card"><span className="metric-icon">◌</span><div><p className="label">Umidade</p><strong>{umidade || "--%"}</strong></div></div><div className="metric-card"><span className="metric-icon">↗</span><div><p className="label">Status</p><strong>{temperatura ? "Atualizado" : "Sem dados"}</strong></div></div></div>
+        </section>
 
-        <div className="weather-result">
-          <div className="result-header">
-            <span className="result-icon">📍</span>
-            <div>
-              <p className="label">Cidade</p>
-              <h2>{cidade || "Sua cidade"}</h2>
-            </div>
-          </div>
-
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <span className="metric-icon">🌡️</span>
-              <div>
-                <p className="label">Temperatura</p>
-                <strong>{temperatura || "--°C"}</strong>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <span className="metric-icon">☁️</span>
-              <div>
-                <p className="label">Clima</p>
-                <strong>{clima || "Aguardando consulta"}</strong>
-              </div>
-            </div>
-
-            <div className="metric-card full-width">
-              <span className="metric-icon">💧</span>
-              <div>
-                <p className="label">Umidade</p>
-                <strong>{umidade || "--%"}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <footer className="app-footer"><span>feito para olhar para cima</span><span className="footer-line" /><span>tempo real · clima local</span></footer>
+      </main>
     </div>
   );
 }
 
-// Exporta o componente App para ser utilizado no react
 export default App;
